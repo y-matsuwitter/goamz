@@ -27,7 +27,7 @@ package sns
 import (
 	"encoding/xml"
 	"errors"
-	"github.com/crowdmob/goamz/aws"
+	"github.com/y-matsuwitter/goamz/aws"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -182,6 +182,7 @@ type PublishOpt struct {
 	MessageStructure string
 	Subject          string
 	TopicArn         string
+	EndpointArn      string
 }
 
 type PublishResp struct {
@@ -210,6 +211,10 @@ func (sns *SNS) Publish(options *PublishOpt) (resp *PublishResp, err error) {
 
 	if options.TopicArn != "" {
 		params["TopicArn"] = options.TopicArn
+	}
+
+	if options.EndpointArn != "" {
+		params["EndpointArn"] = options.EndpointArn
 	}
 
 	err = sns.query(nil, nil, params, resp)
@@ -386,12 +391,16 @@ type CreatePlatformEndpointResp struct {
 // CreatePlatformEndpoint
 //
 // See http://docs.aws.amazon.com/sns/latest/api/API_CreatePlatformEndpoint.html for more details.
-func (sns *SNS) CreatePlatformEndpoint(appArn, token, userData string) (resp *CreatePlatformEndpointResp, err error) {
+func (sns *SNS) CreatePlatformEndpoint(appArn, token, userData *string) (resp *CreatePlatformEndpointResp, err error) {
 	resp = &CreatePlatformEndpointResp{}
 	params := makeParams("CreatePlatformEndpoint")
 	params["PlatformApplicationArn"] = appArn
 	params["Token"] = token
-	params["CustomUserData"] = userData
+
+	if userData != nil {
+		params["CustomUserData"] = userData
+	}
+
 	err = sns.query(nil, nil, params, resp)
 	return
 }

@@ -391,13 +391,13 @@ type CreatePlatformEndpointResp struct {
 // CreatePlatformEndpoint
 //
 // See http://docs.aws.amazon.com/sns/latest/api/API_CreatePlatformEndpoint.html for more details.
-func (sns *SNS) CreatePlatformEndpoint(appArn, token, userData *string) (resp *CreatePlatformEndpointResp, err error) {
+func (sns *SNS) CreatePlatformEndpoint(appArn, token, userData string) (resp *CreatePlatformEndpointResp, err error) {
 	resp = &CreatePlatformEndpointResp{}
 	params := makeParams("CreatePlatformEndpoint")
 	params["PlatformApplicationArn"] = appArn
 	params["Token"] = token
 
-	if userData != nil {
+	if userData != "" {
 		params["CustomUserData"] = userData
 	}
 
